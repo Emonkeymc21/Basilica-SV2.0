@@ -9,6 +9,40 @@ function ymdLocal(d: Date){
   return `${y}-${m}-${day}`;
 }
 
+function buildRecurringForMonth(y:number,m:number): Evt[] {
+  const out: Evt[] = [];
+  const days = new Date(y,m+1,0).getDate();
+
+  for(let d=1; d<=days; d++){
+    const date = new Date(y,m,d);
+    const wd = date.getDay(); // 0 dom,2 mar,4 jue,5 vie,6 sab
+    const mm = String(m+1).padStart(2,'0');
+    const dd = String(d).padStart(2,'0');
+    const yyyy = String(y);
+
+    // MISAS
+    if(wd>=1 && wd<=5) out.push({id:`misa8-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T08:00:00`,end:`${yyyy}-${mm}-${dd}T09:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa de lunes a viernes 8:00 hs',category:'horario-fijo'});
+    if(wd>=2 && wd<=5) out.push({id:`misa20mv-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa martes a viernes 20:00 hs',category:'horario-fijo'});
+    if(wd===6) out.push({id:`misa20s-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa sábado 20:00 hs',category:'horario-fijo'});
+    if(wd===0){
+      out.push({id:`misa11d-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T11:00:00`,end:`${yyyy}-${mm}-${dd}T12:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa domingo 11:00 hs',category:'horario-fijo'});
+      out.push({id:`misa20d-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa domingo 20:00 hs',category:'horario-fijo'});
+    }
+
+    // CONFESIONES
+    if(wd===2) out.push({id:`confmar-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T18:00:00`,end:`${yyyy}-${mm}-${dd}T20:00:00`,location:'Basílica San Vicente Ferrer',details:'Martes 18:00 a 20:00 hs',category:'horario-fijo'});
+    if(wd===5){
+      out.push({id:`confvie1-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T09:00:00`,end:`${yyyy}-${mm}-${dd}T12:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 09:00 a 12:00 hs',category:'horario-fijo'});
+      out.push({id:`confvie2-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T17:00:00`,end:`${yyyy}-${mm}-${dd}T20:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 17:00 a 20:00 hs',category:'horario-fijo'});
+    }
+
+    // ADORACIÓN
+    if(wd===4) out.push({id:`adorjue-${yyyy}${mm}${dd}`,title:'Adoración Eucarística',start:`${yyyy}-${mm}-${dd}T18:00:00`,end:`${yyyy}-${mm}-${dd}T19:30:00`,location:'Basílica San Vicente Ferrer',details:'Jueves 18:00 a 19:30 hs',category:'horario-fijo'});
+    if(wd===5) out.push({id:`adorvie-${yyyy}${mm}${dd}`,title:'Adoración Eucarística',start:`${yyyy}-${mm}-${dd}T08:30:00`,end:`${yyyy}-${mm}-${dd}T10:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 08:30 a 10:00 hs',category:'horario-fijo'});
+  }
+  return out;
+}
+
 export default function Calendarios(){
   const [cursor,setCursor]=useState(new Date());
   const [view,setView]=useState<'agenda'|'mes'>('agenda');
@@ -17,9 +51,13 @@ export default function Calendarios(){
   const firstDay=new Date(y,m,1);
   const monthName=cursor.toLocaleDateString('es-AR',{month:'long',year:'numeric'});
 
-  const monthEvents = useMemo(()=> (events as Evt[]).filter(e=>{
-    const d=new Date(e.start); return d.getFullYear()===y && d.getMonth()===m;
-  }).sort((a,b)=> +new Date(a.start)- +new Date(b.start)),[y,m]);
+  const monthEvents = useMemo(()=> {
+    const base = (events as Evt[]).filter(e=>{
+      const d=new Date(e.start); return d.getFullYear()===y && d.getMonth()===m;
+    });
+    const recurring = buildRecurringForMonth(y,m);
+    return [...base, ...recurring].sort((a,b)=> +new Date(a.start)- +new Date(b.start));
+  },[y,m]);
 
   const byDay = useMemo(()=>{
     const map = new Map<string, Evt[]>();
@@ -79,7 +117,7 @@ export default function Calendarios(){
           return <div key={idx} className='min-h-20 rounded-2xl border border-slate-200 bg-white p-2'>
             <div className='font-bold'>{d}</div>
             <div className='mt-1 space-y-1'>
-              {list.slice(0,2).map(ev=><div key={ev.id} className='h-2 w-2 rounded-full bg-amber-500' title={ev.title}></div>)}
+              {list.slice(0,3).map(ev=><div key={ev.id} className='h-2 w-2 rounded-full bg-amber-500' title={ev.title}></div>)}
             </div>
           </div>
         })}

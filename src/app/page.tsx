@@ -6,7 +6,6 @@ import Image from 'next/image';
 export default function Home(){
  const today = new Date().toISOString().slice(0,10);
  const todayEvents = (events as any[]).filter((e:any)=> e.start?.slice(0,10)===today).slice(0,5);
- const destacadas=['/images/horarios-primavera-verano.png','/images/catequesis-familiar.png','/images/misa-enfermos.png'];
 
  return <div className='space-y-8'>
  <section className='rounded-2xl overflow-hidden border border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 md:p-8'>
@@ -19,8 +18,14 @@ export default function Home(){
         <Link href='/cancionero' className='px-4 py-3 rounded-xl bg-white border border-amber-300 font-semibold text-amber-900'>Ir al cancionero</Link>
       </div>
     </div>
-    <div className='grid grid-cols-3 gap-2'>
-      {destacadas.map((src)=> <div key={src} className='relative h-40 rounded-xl overflow-hidden border border-amber-200'><Image src={src} alt='Actividad parroquial' fill className='object-cover'/></div>)}
+
+    <div className='rounded-2xl overflow-hidden border border-amber-200 bg-white'>
+      <div className='relative h-56 md:h-64'>
+        <Image src='/images/logo.png' alt='Logo Basílica San Vicente Ferrer' fill className='object-contain p-8 bg-slate-50'/>
+      </div>
+      <div className='px-4 py-3 text-sm text-slate-600 border-t border-amber-100'>
+        Imagen principal de la Basílica (genérica por ahora). Cuando quieras, la reemplazamos por una foto grande del templo.
+      </div>
     </div>
    </div>
  </section>
