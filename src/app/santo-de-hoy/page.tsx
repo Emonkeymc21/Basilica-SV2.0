@@ -32,7 +32,7 @@ export default function Page(){
       <h2 className='text-xl font-semibold'>{data.name || data.title}</h2>
       {data.image && <Image src={data.image} alt={data.name || 'Santo'} width={800} height={500} className='rounded-lg w-full h-auto'/>}
       <p>{data.description}</p>
-      {data.sourceUrl && <a href={data.sourceUrl} className='underline' target='_blank'>Fuente</a>}
+      {data.sourceUrl && <details className='text-sm'><summary className='cursor-pointer text-blue-700 underline'>Ver fuente litúrgica (opcional)</summary><p className='mt-2 text-slate-600'>La información se muestra acá mismo. Solo abrí la fuente si querés ampliar.</p><a href={data.sourceUrl} className='underline text-blue-700' target='_blank' rel='noreferrer'>Abrir fuente LitCal</a></details>}
       <p className='text-xs text-slate-500'>Origen: {data.source}</p>
     </article>}
   </div>

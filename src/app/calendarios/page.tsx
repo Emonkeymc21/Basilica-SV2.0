@@ -9,18 +9,43 @@ function ymdLocal(d: Date){
   return `${y}-${m}-${day}`;
 }
 
+function eventType(e: Evt): 'misa'|'confesion'|'adoracion'|'liturgia'|'actividad' {
+  const t = (e.title || '').toLowerCase();
+  const c = (e.category || '').toLowerCase();
+  if (c.includes('liturg')) return 'liturgia';
+  if (t.includes('confesi')) return 'confesion';
+  if (t.includes('adoración') || t.includes('adoracion')) return 'adoracion';
+  if (t.includes('misa')) return 'misa';
+  return 'actividad';
+}
+
+const typeColor: Record<ReturnType<typeof eventType>, string> = {
+  misa: 'bg-blue-500',
+  confesion: 'bg-violet-500',
+  adoracion: 'bg-amber-500',
+  liturgia: 'bg-rose-500',
+  actividad: 'bg-emerald-500',
+};
+
+const typeLabel: Record<ReturnType<typeof eventType>, string> = {
+  misa: 'Misa',
+  confesion: 'Confesión',
+  adoracion: 'Adoración',
+  liturgia: 'Liturgia',
+  actividad: 'Actividad',
+};
+
 function buildRecurringForMonth(y:number,m:number): Evt[] {
   const out: Evt[] = [];
   const days = new Date(y,m+1,0).getDate();
 
   for(let d=1; d<=days; d++){
     const date = new Date(y,m,d);
-    const wd = date.getDay(); // 0 dom,2 mar,4 jue,5 vie,6 sab
+    const wd = date.getDay();
     const mm = String(m+1).padStart(2,'0');
     const dd = String(d).padStart(2,'0');
     const yyyy = String(y);
 
-    // MISAS
     if(wd>=1 && wd<=5) out.push({id:`misa8-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T08:00:00`,end:`${yyyy}-${mm}-${dd}T09:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa de lunes a viernes 8:00 hs',category:'horario-fijo'});
     if(wd>=2 && wd<=5) out.push({id:`misa20mv-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa martes a viernes 20:00 hs',category:'horario-fijo'});
     if(wd===6) out.push({id:`misa20s-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa sábado 20:00 hs',category:'horario-fijo'});
@@ -29,23 +54,38 @@ function buildRecurringForMonth(y:number,m:number): Evt[] {
       out.push({id:`misa20d-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa domingo 20:00 hs',category:'horario-fijo'});
     }
 
-    // CONFESIONES
     if(wd===2) out.push({id:`confmar-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T18:00:00`,end:`${yyyy}-${mm}-${dd}T20:00:00`,location:'Basílica San Vicente Ferrer',details:'Martes 18:00 a 20:00 hs',category:'horario-fijo'});
     if(wd===5){
       out.push({id:`confvie1-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T09:00:00`,end:`${yyyy}-${mm}-${dd}T12:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 09:00 a 12:00 hs',category:'horario-fijo'});
       out.push({id:`confvie2-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T17:00:00`,end:`${yyyy}-${mm}-${dd}T20:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 17:00 a 20:00 hs',category:'horario-fijo'});
     }
 
-    // ADORACIÓN
     if(wd===4) out.push({id:`adorjue-${yyyy}${mm}${dd}`,title:'Adoración Eucarística',start:`${yyyy}-${mm}-${dd}T18:00:00`,end:`${yyyy}-${mm}-${dd}T19:30:00`,location:'Basílica San Vicente Ferrer',details:'Jueves 18:00 a 19:30 hs',category:'horario-fijo'});
     if(wd===5) out.push({id:`adorvie-${yyyy}${mm}${dd}`,title:'Adoración Eucarística',start:`${yyyy}-${mm}-${dd}T08:30:00`,end:`${yyyy}-${mm}-${dd}T10:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 08:30 a 10:00 hs',category:'horario-fijo'});
   }
   return out;
 }
 
+
+
+function buildLiturgicalForMonth(y:number,m:number): Evt[] {
+  const out: Evt[] = [];
+  const days = new Date(y,m+1,0).getDate();
+  for(let d=1; d<=days; d++){
+    const wd = new Date(y,m,d).getDay();
+    const mm = String(m+1).padStart(2,'0');
+    const dd = String(d).padStart(2,'0');
+    const yyyy = String(y);
+    if (wd===0) {
+      out.push({id:`lit-dom-${yyyy}${mm}${dd}`,title:'Celebración dominical',start:`${yyyy}-${mm}-${dd}T00:00:00`,location:'Basílica San Vicente Ferrer',details:'Domingo: celebración litúrgica del día',category:'liturgia'});
+    }
+  }
+  return out;
+}
 export default function Calendarios(){
   const [cursor,setCursor]=useState(new Date());
-  const [view,setView]=useState<'agenda'|'mes'>('agenda');
+  const [view,setView]=useState<'agenda'|'mes'>('mes');
+  const [selectedDay, setSelectedDay] = useState<number | null>(new Date().getDate());
 
   const y=cursor.getFullYear(); const m=cursor.getMonth();
   const firstDay=new Date(y,m,1);
@@ -56,7 +96,8 @@ export default function Calendarios(){
       const d=new Date(e.start); return d.getFullYear()===y && d.getMonth()===m;
     });
     const recurring = buildRecurringForMonth(y,m);
-    return [...base, ...recurring].sort((a,b)=> +new Date(a.start)- +new Date(b.start));
+    const liturgical = buildLiturgicalForMonth(y,m);
+    return [...base, ...recurring, ...liturgical].sort((a,b)=> +new Date(a.start)- +new Date(b.start));
   },[y,m]);
 
   const byDay = useMemo(()=>{
@@ -70,11 +111,13 @@ export default function Calendarios(){
   },[monthEvents]);
 
   const daysInMonth = new Date(y,m+1,0).getDate();
-  const pad = firstDay.getDay(); // 0 sunday
-
+  const pad = firstDay.getDay();
   const emptyCells: (number | null)[] = Array.from({ length: pad }, () => null as number | null);
   const dayCells: (number | null)[] = Array.from({ length: daysInMonth }, (_, i) => (i + 1) as number | null);
   const cells: (number | null)[] = [...emptyCells, ...dayCells];
+
+  const selectedKey = selectedDay ? `${y}-${String(m+1).padStart(2,'0')}-${String(selectedDay).padStart(2,'0')}` : null;
+  const selectedEvents = selectedKey ? (byDay.get(selectedKey) || []) : [];
 
   return (
     <div className='space-y-4'>
@@ -85,27 +128,42 @@ export default function Calendarios(){
 
       <section className='bg-white/80 rounded-2xl border border-slate-200 p-3 shadow-sm'>
         <div className='flex items-center justify-between'>
-          <button className='h-10 w-10 rounded-xl border bg-white' onClick={()=>setCursor(new Date(y,m-1,1))}>◀</button>
+          <button className='h-10 w-10 rounded-xl border bg-white' onClick={()=>{setCursor(new Date(y,m-1,1)); setSelectedDay(1);}}>◀</button>
           <div className='text-2xl font-semibold capitalize'>{monthName}</div>
-          <button className='h-10 w-10 rounded-xl border bg-white' onClick={()=>setCursor(new Date(y,m+1,1))}>▶</button>
+          <button className='h-10 w-10 rounded-xl border bg-white' onClick={()=>{setCursor(new Date(y,m+1,1)); setSelectedDay(1);}}>▶</button>
         </div>
       </section>
 
-      <div className='flex gap-2'>
+      <div className='flex flex-wrap gap-2 items-center'>
         <button onClick={()=>setView('agenda')} className={`px-4 py-2 rounded-full border ${view==='agenda'?'bg-blue-50 border-blue-400 shadow':'bg-white border-slate-300'}`}>Agenda</button>
         <button onClick={()=>setView('mes')} className={`px-4 py-2 rounded-full border ${view==='mes'?'bg-blue-50 border-blue-400 shadow':'bg-white border-slate-300'}`}>Mes</button>
+
+        <div className='ml-auto flex flex-wrap gap-3 text-xs text-slate-600'>
+          {(['misa','confesion','adoracion','liturgia','actividad'] as const).map(t => (
+            <span key={t} className='inline-flex items-center gap-1'>
+              <span className={`h-2.5 w-2.5 rounded-full ${typeColor[t]}`} /> {typeLabel[t]}
+            </span>
+          ))}
+        </div>
       </div>
 
       {view==='agenda' && <div className='space-y-3'>
         {monthEvents.length===0 && <div className='bg-white rounded-2xl border p-4'>No hay actividades para este mes.</div>}
-        {monthEvents.map(e=><article key={e.id} className='bg-white rounded-2xl border border-slate-200 p-4'>
-          <h3 className='text-2xl font-bold text-slate-900'>{e.title}</h3>
-          <p className='text-sm text-slate-600'>
-            {new Date(e.start).toLocaleDateString('es-AR')} · {new Date(e.start).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}
-            {e.end?`-${new Date(e.end).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}`:''} · {e.location || 'Basílica San Vicente Ferrer'}
-          </p>
-          {(e.details||e.description) && <p className='mt-2 text-xl text-slate-800'>{e.details||e.description}</p>}
-        </article>)}
+        {monthEvents.map(e=>{
+          const t = eventType(e);
+          return <article key={e.id} className='bg-white rounded-2xl border border-slate-200 p-4'>
+            <div className='flex items-center gap-2 mb-1'>
+              <span className={`h-2.5 w-2.5 rounded-full ${typeColor[t]}`}></span>
+              <span className='text-xs text-slate-500'>{typeLabel[t]}</span>
+            </div>
+            <h3 className='text-2xl font-bold text-slate-900'>{e.title}</h3>
+            <p className='text-sm text-slate-600'>
+              {new Date(e.start).toLocaleDateString('es-AR')} · {new Date(e.start).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}
+              {e.end?`-${new Date(e.end).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}`:''} · {e.location || 'Basílica San Vicente Ferrer'}
+            </p>
+            {(e.details||e.description) && <p className='mt-2 text-xl text-slate-800'>{e.details||e.description}</p>}
+          </article>
+        })}
       </div>}
 
       <div className='grid grid-cols-7 gap-2'>
@@ -114,14 +172,45 @@ export default function Calendarios(){
           if(!d) return <div key={idx} />;
           const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
           const list = byDay.get(key) || [];
-          return <div key={idx} className='min-h-20 rounded-2xl border border-slate-200 bg-white p-2'>
+          const active = selectedDay === d;
+          return <button type='button' key={idx} onClick={()=>setSelectedDay(d)} className={`min-h-20 rounded-2xl border p-2 text-left ${active?'border-blue-500 ring-2 ring-blue-200':'border-slate-200 bg-white'}`}>
             <div className='font-bold'>{d}</div>
-            <div className='mt-1 space-y-1'>
-              {list.slice(0,3).map(ev=><div key={ev.id} className='h-2 w-2 rounded-full bg-amber-500' title={ev.title}></div>)}
+            <div className='mt-1 flex flex-wrap gap-1'>
+              {Array.from(new Set(list.map(ev => eventType(ev)))).map((t) => (
+                <span key={t} className={`h-2.5 w-2.5 rounded-full ${typeColor[t]}`} title={typeLabel[t]}></span>
+              ))}
             </div>
-          </div>
+          </button>
         })}
       </div>
+
+      {view==='mes' && selectedDay && (
+        <section className='bg-white rounded-2xl border border-slate-200 p-4'>
+          <h2 className='text-xl font-bold text-slate-900 mb-2'>Día {selectedDay}</h2>
+          {selectedEvents.length === 0 ? (
+            <p className='text-slate-600'>No hay actividades para este día.</p>
+          ) : (
+            <div className='space-y-3'>
+              {selectedEvents.map(e=>{
+                const t = eventType(e);
+                return <article key={e.id} className='rounded-xl border border-slate-200 p-3'>
+                  <div className='flex items-center gap-2 mb-1'>
+                    <span className={`h-2.5 w-2.5 rounded-full ${typeColor[t]}`}></span>
+                    <span className='text-xs text-slate-500'>{typeLabel[t]}</span>
+                  </div>
+                  <h3 className='font-semibold text-slate-900'>{e.title}</h3>
+                  <p className='text-sm text-slate-600'>
+                    {new Date(e.start).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}
+                    {e.end?` - ${new Date(e.end).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}`:''}
+                    {' · '}{e.location || 'Basílica San Vicente Ferrer'}
+                  </p>
+                  {(e.details||e.description) && <p className='mt-1 text-slate-700'>{e.details||e.description}</p>}
+                </article>
+              })}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   )
 }
