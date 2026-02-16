@@ -33,10 +33,10 @@ export default function Calendarios(){
 
   const daysInMonth = new Date(y,m+1,0).getDate();
   const pad = firstDay.getDay(); // 0 sunday
-  const cells: (number | null)[] = [
-    ...Array.from<number | null>({ length: pad }, () => null),
-    ...Array.from<number>({ length: daysInMonth }, (_, i) => i + 1),
-  ];
+
+  const emptyCells: (number | null)[] = Array.from({ length: pad }, () => null as number | null);
+  const dayCells: (number | null)[] = Array.from({ length: daysInMonth }, (_, i) => (i + 1) as number | null);
+  const cells: (number | null)[] = [...emptyCells, ...dayCells];
 
   return (
     <div className='space-y-4'>
