@@ -1,92 +1,14 @@
 [
   {
     "id": "1",
-    "title": "Oración 1",
-    "category": "Novenas",
-    "body": "Texto de oración demo."
+    "title": "Guía breve para confesión",
+    "category": "Confesión",
+    "body": "1) Hacé el examen de conciencia\n2) Decí tus pecados con sinceridad\n3) Escuchá el consejo\n4) Recibí la absolución\n5) Cumplí la penitencia"
   },
   {
     "id": "2",
-    "title": "Oración 2",
-    "category": "Adoración",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "3",
-    "title": "Oración 3",
-    "category": "Santos patronos",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "4",
-    "title": "Oración 4",
-    "category": "Oraciones diarias",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "5",
-    "title": "Oración 5",
-    "category": "Novenas",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "6",
-    "title": "Oración 6",
-    "category": "Adoración",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "7",
-    "title": "Oración 7",
-    "category": "Santos patronos",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "8",
-    "title": "Oración 8",
-    "category": "Oraciones diarias",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "9",
-    "title": "Oración 9",
-    "category": "Novenas",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "10",
-    "title": "Oración 10",
-    "category": "Adoración",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "11",
-    "title": "Oración 11",
-    "category": "Santos patronos",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "12",
-    "title": "Oración 12",
-    "category": "Oraciones diarias",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "13",
-    "title": "Oración 13",
-    "category": "Novenas",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "14",
-    "title": "Oración 14",
-    "category": "Adoración",
-    "body": "Texto de oración demo."
-  },
-  {
-    "id": "15",
-    "title": "Oración 15",
-    "category": "Santos patronos",
-    "body": "Texto de oración demo."
+    "title": "Acto de contrición",
+    "category": "Confesión",
+    "body": "Señor mío Jesucristo...\n\n(poné la versión que usan en tu parroquia)"
   }
 ]

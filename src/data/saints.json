@@ -1,72 +1,10 @@
 [
   {
     "id": "1",
-    "name": "Santo 1",
-    "description": "Breve biografía.",
+    "name": "Santo/a de ejemplo (16/2)",
+    "description": "Breve biografía… Oración…",
     "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "2",
-    "name": "Santo 2",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "3",
-    "name": "Santo 3",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "4",
-    "name": "Santo 4",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "5",
-    "name": "Santo 5",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "6",
-    "name": "Santo 6",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "7",
-    "name": "Santo 7",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "8",
-    "name": "Santo 8",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "9",
-    "name": "Santo 9",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
-  },
-  {
-    "id": "10",
-    "name": "Santo 10",
-    "description": "Breve biografía.",
-    "image": "/images/saint-placeholder.jpg",
-    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html"
+    "sourceUrl": "https://www.vaticannews.va/es/santo-del-dia.html",
+    "key": "2-16"
   }
 ]

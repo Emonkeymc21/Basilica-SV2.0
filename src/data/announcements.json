@@ -1,58 +1,79 @@
 [
   {
-    "id": "1",
-    "title": "Novedad 1",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-01",
-    "important": true
+    "id": "canto-gregoriano",
+    "title": "Curso de Canto Gregoriano",
+    "summary": "Nivel inicial · No se precisan conocimientos previos",
+    "date": "2026-01-01",
+    "important": false,
+    "when": "Sábados: 21/2 · 28/2 · 07/3 · 14/3 · 21/3 · 17:30 a 19:00",
+    "where": "Basílica San Vicente Ferrer · Lavalle 60 · Godoy Cruz",
+    "image": "/images/v3/curso-canto-gregoriano.png",
+    "details": "Profesor: Mario Masera.\nTraé cuaderno y ganas de aprender."
   },
   {
-    "id": "2",
-    "title": "Novedad 2",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-02",
-    "important": true
+    "id": "catequesis-familiar",
+    "title": "Catequesis Familiar",
+    "summary": "¡Sumate y comenzá este camino de fe!",
+    "date": "2026-01-01",
+    "important": false,
+    "when": "Inscripciones abiertas hasta fines de abril · Atención desde las 18 hs (solo WhatsApp)",
+    "where": "Basílica San Vicente Ferrer · Godoy Cruz",
+    "image": "/images/v3/catequesis-familiar.png",
+    "details": "Contactos:\n• Verónica: 261 573-2600\n• Claudia: 261 667-6598"
   },
   {
-    "id": "3",
-    "title": "Novedad 3",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-03",
-    "important": false
+    "id": "misa-enfermos",
+    "title": "Santa Misa por los enfermos",
+    "summary": "Unción de los enfermos · Bendición de agua y remedios",
+    "date": "2026-01-01",
+    "important": false,
+    "when": "2º viernes de cada mes · 20:00 hs (Santo Rosario 19:00 hs)",
+    "where": "Basílica San Vicente Ferrer · Lavalle 60 · Godoy Cruz",
+    "image": "/images/v3/misa-enfermos.png",
+    "details": "Te esperamos para rezar juntos."
   },
   {
-    "id": "4",
-    "title": "Novedad 4",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-04",
-    "important": false
+    "id": "dedicacion-letran",
+    "title": "Dedicación a la Basílica San Juan de Letrán",
+    "summary": "9 de noviembre",
+    "date": "2026-01-01",
+    "important": false,
+    "when": "9 de noviembre",
+    "where": "Iglesia universal · Efeméride",
+    "image": "/images/v3/flyer-dedicacion-san-juan-letran.jpg",
+    "details": "Efeméride litúrgica.\n\"Cada uno de nosotros es un templo del Espíritu Santo\" (San Pablo)."
   },
   {
-    "id": "5",
-    "title": "Novedad 5",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-05",
-    "important": false
+    "id": "nuestra-senora-salud",
+    "title": "Nuestra Señora de la Salud",
+    "summary": "21 de noviembre",
+    "date": "2026-01-01",
+    "important": false,
+    "when": "21 de noviembre",
+    "where": "Devoción mariana",
+    "image": "/images/v3/flyer-nuestra-senora-salud.jpg",
+    "details": "\"Oh Santísima Virgen María, salud de los enfermos, acoge nuestros sufrimientos y únelos a los de Él\"."
   },
   {
-    "id": "6",
-    "title": "Novedad 6",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-06",
-    "important": false
+    "id": "cristo-rey",
+    "title": "Solemnidad de Cristo Rey",
+    "summary": "23 de noviembre",
+    "date": "2026-01-01",
+    "important": false,
+    "when": "23 de noviembre",
+    "where": "Solemnidad",
+    "image": "/images/v3/flyer-cristo-rey.jpg",
+    "details": "\"Yo soy Rey. Para esto nací, para esto vine al mundo, para ser testigo de la Verdad\" (Jn 18, 36-37)."
   },
   {
-    "id": "7",
-    "title": "Novedad 7",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-07",
-    "important": false
-  },
-  {
-    "id": "8",
-    "title": "Novedad 8",
-    "summary": "Actividad parroquial y anuncio comunitario.",
-    "date": "2026-02-08",
-    "important": false
+    "id": "solo-por-hoy",
+    "title": "Sólo por hoy…",
+    "summary": "Decálogo de la serenidad (Papa Juan XXIII)",
+    "date": "2026-01-01",
+    "important": false,
+    "when": "Para rezar y practicar día a día",
+    "where": "Reflexión",
+    "image": "/images/v3/solo-por-hoy-cover.jpg",
+    "details": "Un pequeño camino diario para vivir con serenidad.\nAbrí el detalle para leer los puntos."
   }
 ]
