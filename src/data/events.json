@@ -1,0 +1,162 @@
+[
+  {
+    "id": "1",
+    "title": "Actividad 1",
+    "start": "2026-02-16T10:00:00",
+    "category": "misa",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "2",
+    "title": "Actividad 2",
+    "start": "2026-02-17T12:00:00",
+    "category": "adoración",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "3",
+    "title": "Actividad 3",
+    "start": "2026-02-18T14:00:00",
+    "category": "catequesis",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "4",
+    "title": "Actividad 4",
+    "start": "2026-02-19T16:00:00",
+    "category": "reunión",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "5",
+    "title": "Actividad 5",
+    "start": "2026-02-20T10:00:00",
+    "category": "misa",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "6",
+    "title": "Actividad 6",
+    "start": "2026-02-21T12:00:00",
+    "category": "adoración",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "7",
+    "title": "Actividad 7",
+    "start": "2026-02-22T14:00:00",
+    "category": "catequesis",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "8",
+    "title": "Actividad 8",
+    "start": "2026-02-23T16:00:00",
+    "category": "reunión",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "9",
+    "title": "Actividad 9",
+    "start": "2026-02-24T10:00:00",
+    "category": "misa",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "10",
+    "title": "Actividad 10",
+    "start": "2026-02-25T12:00:00",
+    "category": "adoración",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "11",
+    "title": "Actividad 11",
+    "start": "2026-02-26T14:00:00",
+    "category": "catequesis",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "12",
+    "title": "Actividad 12",
+    "start": "2026-02-27T16:00:00",
+    "category": "reunión",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "13",
+    "title": "Actividad 13",
+    "start": "2026-02-28T10:00:00",
+    "category": "misa",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "14",
+    "title": "Actividad 14",
+    "start": "2026-03-01T12:00:00",
+    "category": "adoración",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "15",
+    "title": "Actividad 15",
+    "start": "2026-02-16T14:00:00",
+    "category": "catequesis",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "16",
+    "title": "Actividad 16",
+    "start": "2026-02-17T16:00:00",
+    "category": "reunión",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "17",
+    "title": "Actividad 17",
+    "start": "2026-02-18T10:00:00",
+    "category": "misa",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "18",
+    "title": "Actividad 18",
+    "start": "2026-02-19T12:00:00",
+    "category": "adoración",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "19",
+    "title": "Actividad 19",
+    "start": "2026-02-20T14:00:00",
+    "category": "catequesis",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  },
+  {
+    "id": "20",
+    "title": "Actividad 20",
+    "start": "2026-02-21T16:00:00",
+    "category": "reunión",
+    "location": "Basílica San Vicente Ferrer",
+    "description": "Detalle de actividad"
+  }
+]

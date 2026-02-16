@@ -1,0 +1,58 @@
+[
+  {
+    "id": "1",
+    "title": "Novedad 1",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-01",
+    "important": true
+  },
+  {
+    "id": "2",
+    "title": "Novedad 2",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-02",
+    "important": true
+  },
+  {
+    "id": "3",
+    "title": "Novedad 3",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-03",
+    "important": false
+  },
+  {
+    "id": "4",
+    "title": "Novedad 4",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-04",
+    "important": false
+  },
+  {
+    "id": "5",
+    "title": "Novedad 5",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-05",
+    "important": false
+  },
+  {
+    "id": "6",
+    "title": "Novedad 6",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-06",
+    "important": false
+  },
+  {
+    "id": "7",
+    "title": "Novedad 7",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-07",
+    "important": false
+  },
+  {
+    "id": "8",
+    "title": "Novedad 8",
+    "summary": "Actividad parroquial y anuncio comunitario.",
+    "date": "2026-02-08",
+    "important": false
+  }
+]
