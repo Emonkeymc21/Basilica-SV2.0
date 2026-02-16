@@ -1,6 +1,5 @@
 'use client'
 import events from '@/data/events.json';
-import Image from 'next/image';
 import { useMemo, useState } from 'react';
 
 type Evt = {id:string;title:string;start:string;end?:string;location?:string;details?:string;description?:string;category?:string};
@@ -34,7 +33,10 @@ export default function Calendarios(){
 
   const daysInMonth = new Date(y,m+1,0).getDate();
   const pad = firstDay.getDay(); // 0 sunday
-  const cells = Array.from({length:pad},()=>null).concat(Array.from({length:daysInMonth},(_,i)=>i+1));
+  const cells: (number | null)[] = [
+    ...Array.from<number | null>({ length: pad }, () => null),
+    ...Array.from<number>({ length: daysInMonth }, (_, i) => i + 1),
+  ];
 
   return (
     <div className='space-y-4'>
