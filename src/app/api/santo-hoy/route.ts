@@ -5,15 +5,14 @@ import { getDayData } from '@/lib/liturgical';
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get('date') || undefined;
+  const locale = searchParams.get('locale') || 'es-AR';
+  const diocese = searchParams.get('diocese') || 'mendoza';
+
   const data = await getDayData(date);
   return NextResponse.json({
-    date: data.date,
-    title: data.saint || data.celebration || 'Santo del día',
-    description: data.celebration || '',
-    image: data.image_url || '',
-    source: data.source || 'local',
-    sourceUrl: '',
-    apiLanguage: 'es',
-    displayLanguage: 'es'
+    ...data,
+    locale,
+    diocese,
+    image_included: Boolean(data.image_url)
   });
 }

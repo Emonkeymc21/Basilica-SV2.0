@@ -1,0 +1,192 @@
+[
+  {
+    "date": "2026-01-01",
+    "celebration": "Santa María, Madre de Dios",
+    "saint": "Santa María",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Navidad",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-01-06",
+    "celebration": "Epifanía del Señor",
+    "saint": "Epifanía del Señor",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Navidad",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-02-18",
+    "celebration": "Miércoles de Ceniza",
+    "saint": "Miércoles de Ceniza",
+    "rank": "feria privilegiada",
+    "color": "morado",
+    "season": "Cuaresma",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-03-19",
+    "celebration": "San José, Esposo de la Virgen María",
+    "saint": "San José",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Cuaresma",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-03-29",
+    "celebration": "Domingo de Ramos",
+    "saint": "Domingo de Ramos",
+    "rank": "domingo",
+    "color": "rojo",
+    "season": "Semana Santa",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-04-02",
+    "celebration": "Jueves Santo",
+    "saint": "Jueves Santo",
+    "rank": "triduo pascual",
+    "color": "blanco",
+    "season": "Semana Santa",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-04-03",
+    "celebration": "Viernes Santo",
+    "saint": "Viernes Santo",
+    "rank": "triduo pascual",
+    "color": "rojo",
+    "season": "Semana Santa",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-04-04",
+    "celebration": "Sábado Santo",
+    "saint": "Sábado Santo",
+    "rank": "triduo pascual",
+    "color": "morado",
+    "season": "Semana Santa",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-04-05",
+    "celebration": "Domingo de Pascua de Resurrección",
+    "saint": "Pascua de Resurrección",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Pascua",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-05-24",
+    "celebration": "Pentecostés",
+    "saint": "Pentecostés",
+    "rank": "solemnidad",
+    "color": "rojo",
+    "season": "Pascua",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-06-07",
+    "celebration": "Santísima Trinidad",
+    "saint": "Santísima Trinidad",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Tiempo Ordinario",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-06-14",
+    "celebration": "Corpus Christi",
+    "saint": "Corpus Christi",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Tiempo Ordinario",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-06-19",
+    "celebration": "Sagrado Corazón de Jesús",
+    "saint": "Sagrado Corazón de Jesús",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Tiempo Ordinario",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-06-29",
+    "celebration": "Santos Pedro y Pablo",
+    "saint": "San Pedro y San Pablo",
+    "rank": "solemnidad",
+    "color": "rojo",
+    "season": "Tiempo Ordinario",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-08-15",
+    "celebration": "Asunción de la Virgen María",
+    "saint": "Asunción de la Virgen",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Tiempo Ordinario",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-11-01",
+    "celebration": "Todos los Santos",
+    "saint": "Todos los Santos",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Tiempo Ordinario",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-11-02",
+    "celebration": "Conmemoración de los Fieles Difuntos",
+    "saint": "Fieles Difuntos",
+    "rank": "conmemoración",
+    "color": "morado",
+    "season": "Tiempo Ordinario",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-12-08",
+    "celebration": "Inmaculada Concepción de la Virgen María",
+    "saint": "Inmaculada Concepción",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Adviento",
+    "country": "AR",
+    "diocese": "mendoza"
+  },
+  {
+    "date": "2026-12-25",
+    "celebration": "Navidad del Señor",
+    "saint": "Navidad del Señor",
+    "rank": "solemnidad",
+    "color": "blanco",
+    "season": "Navidad",
+    "country": "AR",
+    "diocese": "mendoza"
+  }
+]
