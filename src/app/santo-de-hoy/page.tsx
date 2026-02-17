@@ -4,6 +4,9 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 type SaintData = {
+  date?: string;
+  apiLanguage?: string;
+  displayLanguage?: string;
   name?: string;
   title?: string;
   description?: string;
