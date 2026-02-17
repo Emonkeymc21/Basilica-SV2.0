@@ -1,169 +1,355 @@
-'use client'
-import events from '@/data/events.json';
+'use client';
+
 import { useMemo, useState } from 'react';
 
-type Evt = {id:string;title:string;start:string;end?:string;location?:string;details?:string;description?:string;category?:string};
+type EventType = 'misa' | 'confesion' | 'adoracion' | 'actividad' | 'liturgia';
 
-function ymdLocal(d: Date){
-  const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${day}`;
-}
-
-function eventType(e: Evt): 'misa'|'confesion'|'adoracion'|'liturgia'|'actividad' {
-  const t = (e.title || '').toLowerCase();
-  const c = (e.category || '').toLowerCase();
-  if (c.includes('liturg')) return 'liturgia';
-  if (t.includes('confesi')) return 'confesion';
-  if (t.includes('adoración') || t.includes('adoracion')) return 'adoracion';
-  if (t.includes('misa')) return 'misa';
-  return 'actividad';
-}
-
-const typeColor: Record<ReturnType<typeof eventType>, string> = {
-  misa: 'bg-blue-500',
-  confesion: 'bg-violet-500',
-  adoracion: 'bg-amber-500',
-  liturgia: 'bg-rose-500',
-  actividad: 'bg-emerald-500',
+type CalendarEvent = {
+  date: string; // YYYY-MM-DD
+  title: string;
+  time?: string;
+  type: EventType;
 };
 
-const typeLabel: Record<ReturnType<typeof eventType>, string> = {
-  misa: 'Misa',
-  confesion: 'Confesión',
-  adoracion: 'Adoración',
-  liturgia: 'Liturgia',
-  actividad: 'Actividad',
+const WEEK_DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+const TYPE_STYLES: Record<EventType, { dot: string; badge: string; label: string }> = {
+  misa: {
+    dot: 'bg-blue-500',
+    badge: 'bg-blue-100 text-blue-800 border-blue-200',
+    label: 'Misa',
+  },
+  confesion: {
+    dot: 'bg-violet-500',
+    badge: 'bg-violet-100 text-violet-800 border-violet-200',
+    label: 'Confesión',
+  },
+  adoracion: {
+    dot: 'bg-amber-500',
+    badge: 'bg-amber-100 text-amber-800 border-amber-200',
+    label: 'Adoración',
+  },
+  actividad: {
+    dot: 'bg-emerald-500',
+    badge: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    label: 'Actividad',
+  },
+  liturgia: {
+    dot: 'bg-rose-500',
+    badge: 'bg-rose-100 text-rose-800 border-rose-200',
+    label: 'Liturgia',
+  },
 };
 
-function buildRecurringForMonth(y:number,m:number): Evt[] {
-  const out: Evt[] = [];
-  const days = new Date(y,m+1,0).getDate();
+const HOLY_WEEK_START = '2026-03-29';
+const HOLY_WEEK_END = '2026-04-05';
 
-  for(let d=1; d<=days; d++){
-    const date = new Date(y,m,d);
-    const wd = date.getDay();
-    const mm = String(m+1).padStart(2,'0');
-    const dd = String(d).padStart(2,'0');
-    const yyyy = String(y);
-    const dayKey = `${yyyy}-${mm}-${dd}`;
-    if (dayKey >= '2026-03-29') continue;
+function pad2(n: number) {
+  return String(n).padStart(2, '0');
+}
 
-    if(wd>=1 && wd<=5) out.push({id:`misa8-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T08:00:00`,end:`${yyyy}-${mm}-${dd}T09:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa de lunes a viernes 8:00 hs',category:'horario-fijo'});
-    if(wd>=2 && wd<=5) out.push({id:`misa20mv-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa martes a viernes 20:00 hs',category:'horario-fijo'});
-    if(wd===6) out.push({id:`misa20s-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa sábado 20:00 hs',category:'horario-fijo'});
-    if(wd===0){
-      out.push({id:`misa11d-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T11:00:00`,end:`${yyyy}-${mm}-${dd}T12:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa domingo 11:00 hs',category:'horario-fijo'});
-      out.push({id:`misa20d-${yyyy}${mm}${dd}`,title:'Misa',start:`${yyyy}-${mm}-${dd}T20:00:00`,end:`${yyyy}-${mm}-${dd}T21:00:00`,location:'Basílica San Vicente Ferrer',details:'Misa domingo 20:00 hs',category:'horario-fijo'});
+function toYmd(y: number, m: number, d: number) {
+  return `${y}-${pad2(m + 1)}-${pad2(d)}`;
+}
+
+function parseYmd(s: string) {
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, (m || 1) - 1, d || 1);
+}
+
+function isBetweenInclusive(dateYmd: string, startYmd: string, endYmd: string) {
+  return dateYmd >= startYmd && dateYmd <= endYmd;
+}
+
+function isBefore(dateYmd: string, limitYmd: string) {
+  return dateYmd < limitYmd;
+}
+
+function sameMonth(dateYmd: string, y: number, m: number) {
+  const dt = parseYmd(dateYmd);
+  return dt.getFullYear() === y && dt.getMonth() === m;
+}
+
+function formatLongDate(dateYmd: string) {
+  const dt = parseYmd(dateYmd);
+  return new Intl.DateTimeFormat('es-AR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(dt);
+}
+
+/**
+ * Genera eventos fijos parroquiales para el mes visible,
+ * SOLO hasta antes de Semana Santa (2026-03-29).
+ */
+function buildRecurringParishEvents(y: number, m: number): CalendarEvent[] {
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const events: CalendarEvent[] = [];
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dt = new Date(y, m, d);
+    const dow = dt.getDay(); // 0 Dom ... 6 Sáb
+    const ymd = toYmd(y, m, d);
+
+    // Solo hasta el día ANTERIOR al inicio de Semana Santa
+    if (!isBefore(ymd, HOLY_WEEK_START)) continue;
+
+    // MISAS
+    // Lun-Vie 08:00
+    if (dow >= 1 && dow <= 5) {
+      events.push({ date: ymd, title: 'Santa Misa', time: '08:00', type: 'misa' });
+    }
+    // Mar-Vie 20:00
+    if (dow >= 2 && dow <= 5) {
+      events.push({ date: ymd, title: 'Santa Misa', time: '20:00', type: 'misa' });
+    }
+    // Sáb 20:00
+    if (dow === 6) {
+      events.push({ date: ymd, title: 'Santa Misa', time: '20:00', type: 'misa' });
+    }
+    // Dom 11:00 y 20:00
+    if (dow === 0) {
+      events.push({ date: ymd, title: 'Santa Misa', time: '11:00', type: 'misa' });
+      events.push({ date: ymd, title: 'Santa Misa', time: '20:00', type: 'misa' });
     }
 
-    if(wd===2) out.push({id:`confmar-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T18:00:00`,end:`${yyyy}-${mm}-${dd}T20:00:00`,location:'Basílica San Vicente Ferrer',details:'Martes 18:00 a 20:00 hs',category:'horario-fijo'});
-    if(wd===5){
-      out.push({id:`confvie1-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T09:00:00`,end:`${yyyy}-${mm}-${dd}T12:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 09:00 a 12:00 hs',category:'horario-fijo'});
-      out.push({id:`confvie2-${yyyy}${mm}${dd}`,title:'Confesiones',start:`${yyyy}-${mm}-${dd}T17:00:00`,end:`${yyyy}-${mm}-${dd}T20:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 17:00 a 20:00 hs',category:'horario-fijo'});
+    // CONFESIONES
+    // Mar 18:00-20:00
+    if (dow === 2) {
+      events.push({ date: ymd, title: 'Confesiones', time: '18:00–20:00', type: 'confesion' });
+    }
+    // Vie 09:00-12:00 y 17:00-20:00
+    if (dow === 5) {
+      events.push({ date: ymd, title: 'Confesiones', time: '09:00–12:00', type: 'confesion' });
+      events.push({ date: ymd, title: 'Confesiones', time: '17:00–20:00', type: 'confesion' });
     }
 
-    if(wd===4) out.push({id:`adorjue-${yyyy}${mm}${dd}`,title:'Adoración Eucarística',start:`${yyyy}-${mm}-${dd}T18:00:00`,end:`${yyyy}-${mm}-${dd}T19:30:00`,location:'Basílica San Vicente Ferrer',details:'Jueves 18:00 a 19:30 hs',category:'horario-fijo'});
-    if(wd===5) out.push({id:`adorvie-${yyyy}${mm}${dd}`,title:'Adoración Eucarística',start:`${yyyy}-${mm}-${dd}T08:30:00`,end:`${yyyy}-${mm}-${dd}T10:00:00`,location:'Basílica San Vicente Ferrer',details:'Viernes 08:30 a 10:00 hs',category:'horario-fijo'});
+    // ADORACIÓN
+    // Jue 18:00-19:30
+    if (dow === 4) {
+      events.push({
+        date: ymd,
+        title: 'Adoración Eucarística',
+        time: '18:00–19:30',
+        type: 'adoracion',
+      });
+    }
+    // Vie 08:30-10:00
+    if (dow === 5) {
+      events.push({
+        date: ymd,
+        title: 'Adoración Eucarística',
+        time: '08:30–10:00',
+        type: 'adoracion',
+      });
+    }
   }
-  return out;
+
+  return events;
 }
 
+/**
+ * Semana Santa 2026: 29/03/2026 al 05/04/2026
+ */
+function buildHolyWeekEventsForMonth(y: number, m: number): CalendarEvent[] {
+  const holyWeek: CalendarEvent[] = [
+    { date: '2026-03-29', title: 'Domingo de Ramos', type: 'liturgia' },
+    { date: '2026-03-30', title: 'Lunes Santo', type: 'liturgia' },
+    { date: '2026-03-31', title: 'Martes Santo', type: 'liturgia' },
+    { date: '2026-04-01', title: 'Miércoles Santo', type: 'liturgia' },
+    { date: '2026-04-02', title: 'Jueves Santo', type: 'liturgia' },
+    { date: '2026-04-03', title: 'Viernes Santo', type: 'liturgia' },
+    { date: '2026-04-04', title: 'Sábado Santo', type: 'liturgia' },
+    { date: '2026-04-05', title: 'Domingo de Pascua', type: 'liturgia' },
+  ];
 
-
-
-function buildHolyWeekForMonth(y:number,m:number): Evt[] {
-  const all: Evt[] = [];
-  const add = (date:string,title:string,details:string) => all.push({
-    id:`holy-${date}-${title}`, title, start:`${date}T00:00:00`, location:'Basílica San Vicente Ferrer', details, category:'liturgia'
-  });
-  add('2026-03-29','Semana Santa: Domingo de Ramos','Inicio de Semana Santa');
-  add('2026-03-30','Semana Santa','Lunes Santo');
-  add('2026-03-31','Semana Santa','Martes Santo');
-  add('2026-04-01','Semana Santa','Miércoles Santo');
-  add('2026-04-02','Semana Santa: Jueves Santo','Triduo Pascual');
-  add('2026-04-03','Semana Santa: Viernes Santo','Pasión del Señor');
-  add('2026-04-04','Semana Santa: Sábado Santo','Vigilia Pascual');
-  add('2026-04-05','Semana Santa: Domingo de Pascua','Resurrección del Señor');
-  return all.filter(e=>{
-    const d=new Date(e.start);
-    return d.getFullYear()===y && d.getMonth()===m;
-  });
+  return holyWeek.filter((ev) => sameMonth(ev.date, y, m));
 }
 
-function buildLiturgicalForMonth(y:number,m:number): Evt[] {
-  const out: Evt[] = [];
-  const days = new Date(y,m+1,0).getDate();
-  for(let d=1; d<=days; d++){
-    const wd = new Date(y,m,d).getDay();
-    const mm = String(m+1).padStart(2,'0');
-    const dd = String(d).padStart(2,'0');
-    const yyyy = String(y);
-    const dayKey = `${yyyy}-${mm}-${dd}`;
-    if (dayKey >= '2026-03-29') continue;
-    if (wd===0) {
-      out.push({id:`lit-dom-${yyyy}${mm}${dd}`,title:'Celebración dominical',start:`${yyyy}-${mm}-${dd}T00:00:00`,location:'Basílica San Vicente Ferrer',details:'Domingo: celebración litúrgica del día',category:'liturgia'});
-    }
-  }
-  return out;
+/**
+ * Si más adelante tenés eventos externos cargados en JSON/API,
+ * podés mapearlos acá a CalendarEvent[].
+ */
+function getManualActivitiesForMonth(_y: number, _m: number): CalendarEvent[] {
+  return [];
 }
-export default function Calendarios(){
-  const [cursor,setCursor]=useState(new Date());
-    const [selectedDay, setSelectedDay] = useState<number | null>(new Date().getDate());
-  const holyStart = '2026-03-29';
-  const holyEnd = '2026-04-05';
 
-  const y=cursor.getFullYear(); const m=cursor.getMonth();
-  const firstDay=new Date(y,m,1);
-  const monthName=cursor.toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+export default function CalendariosPage() {
+  const now = new Date();
+  const [cursor, setCursor] = useState<Date>(new Date(now.getFullYear(), now.getMonth(), 1));
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const monthEvents = useMemo(()=> {
-    const base = (events as Evt[]).filter(e=>{
-      const d=new Date(e.start); return d.getFullYear()===y && d.getMonth()===m;
-    });
-    const recurring = buildRecurringForMonth(y,m);
-    const liturgical = buildLiturgicalForMonth(y,m);
-    const holy = buildHolyWeekForMonth(y,m);
-    return [...base, ...recurring, ...liturgical, ...holy].sort((a,b)=> +new Date(a.start)- +new Date(b.start));
-  },[y,m]);
+  const y = cursor.getFullYear();
+  const m = cursor.getMonth();
 
-  const byDay = useMemo(()=>{
-    const map = new Map<string, Evt[]>();
-    monthEvents.forEach(e=>{
-      const k = ymdLocal(new Date(e.start));
-      if(!map.has(k)) map.set(k,[]);
-      map.get(k)!.push(e);
-    });
-    return map;
-  },[monthEvents]);
+  const monthLabel = new Intl.DateTimeFormat('es-AR', {
+    month: 'long',
+    year: 'numeric',
+  }).format(cursor);
 
-  const daysInMonth = new Date(y,m+1,0).getDate();
-  const pad = firstDay.getDay();
-  const emptyCells: (number | null)[] = Array.from({ length: pad }, () => null as number | null);
-  const dayCells: (number | null)[] = Array.from({ length: daysInMonth }, (_, i) => (i + 1) as number | null);
+  const firstDay = new Date(y, m, 1);
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const pad = firstDay.getDay(); // 0 domingo
+
+  const emptyCells: (number | null)[] = Array.from(
+    { length: pad },
+    () => null as number | null
+  );
+  const dayCells: (number | null)[] = Array.from(
+    { length: daysInMonth },
+    (_, i) => (i + 1) as number | null
+  );
   const cells: (number | null)[] = [...emptyCells, ...dayCells];
 
-  const selectedKey = selectedDay ? `${y}-${String(m+1).padStart(2,'0')}-${String(selectedDay).padStart(2,'0')}` : null;
-  const selectedEvents = selectedKey ? (byDay.get(selectedKey) || []) : [];
+  const events = useMemo(() => {
+    const recurring = buildRecurringParishEvents(y, m);
+    const holyWeek = buildHolyWeekEventsForMonth(y, m);
+    const manual = getManualActivitiesForMonth(y, m);
+    return [...recurring, ...holyWeek, ...manual];
+  }, [y, m]);
+
+  const eventsByDate = useMemo(() => {
+    const map: Record<string, CalendarEvent[]> = {};
+    for (const ev of events) {
+      if (!map[ev.date]) map[ev.date] = [];
+      map[ev.date].push(ev);
+    }
+    return map;
+  }, [events]);
+
+  const selectedEvents = selectedDate ? eventsByDate[selectedDate] ?? [] : [];
+
+  const prevMonth = () => setCursor(new Date(y, m - 1, 1));
+  const nextMonth = () => setCursor(new Date(y, m + 1, 1));
 
   return (
-    <div className='space-y-4'>
-      <div className='flex items-center gap-3'>
-        <button aria-label='volver' className='h-9 w-9 rounded-xl bg-white border border-slate-200' onClick={()=>history.back()}>←</button>
-        <h1 className='text-3xl font-bold text-slate-900'>Calendario</h1>
-      </div>
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="rounded-2xl border bg-white/90 p-4 shadow-sm">
+        <div className="flex items-center justify-between gap-3">
+          <button
+            onClick={prevMonth}
+            className="rounded-xl border px-3 py-2 text-sm hover:bg-gray-50"
+            aria-label="Mes anterior"
+          >
+            ◀
+          </button>
 
-      <section className='bg-white/80 rounded-2xl border border-slate-200 p-3 shadow-sm'>
-        <div className='flex items-center justify-between'>
-          <button className='h-10 w-10 rounded-xl border bg-white' onClick={()=>{setCursor(new Date(y,m-1,1)); setSelectedDay(1);}}>◀</button>
-          <div className='text-2xl font-semibold capitalize'>{monthName}</div>
-          <button className='h-10 w-10 rounded-xl border bg-white' onClick={()=>{setCursor(new Date(y,m+1,1)); setSelectedDay(1);}}>▶</button>
+          <h1 className="text-lg font-semibold capitalize">{monthLabel}</h1>
+
+          <button
+            onClick={nextMonth}
+            className="rounded-xl border px-3 py-2 text-sm hover:bg-gray-50"
+            aria-label="Mes siguiente"
+          >
+            ▶
+          </button>
         </div>
-      </section>
-      <div className='flex flex-wrap gap-3 text-xs text-slate-600'>
-          {(['misa','confesion','adoracion','liturgia','actividad'] as const).map(t => (
-            <span key={t} className='inline-flex items-center gap-1'>
-              <span className={`h-2.5 w-2.5 rounded-full ${typeColor[t]}`} /> {typeLabel[t]}
+
+        {/* Leyenda */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {(Object.keys(TYPE_STYLES) as EventType[]).map((t) => (
+            <span
+              key={t}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs ${TYPE_STYLES[t].badge}`}
+            >
+              <span className={`h-2.5 w-2.5 rounded-full ${TYPE_STYLES[t].dot}`} />
+              {TYPE_STYLES[t].label}
             </span>
           ))}
+        </div>
       </div>
+
+      {/* Grilla del calendario */}
+      <div className="rounded-2xl border bg-white/90 p-4 shadow-sm">
+        <div className="mb-3 grid grid-cols-7 gap-2">
+          {WEEK_DAYS.map((wd) => (
+            <div key={wd} className="text-center text-xs font-semibold text-gray-600">
+              {wd}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-2">
+          {cells.map((day, idx) => {
+            if (day === null) {
+              return <div key={`empty-${idx}`} className="h-20 rounded-xl bg-gray-50" />;
+            }
+
+            const ymd = toYmd(y, m, day);
+            const dayEvents = eventsByDate[ymd] ?? [];
+            const uniqueTypes = Array.from(new Set(dayEvents.map((e) => e.type)));
+            const isSelected = selectedDate === ymd;
+            const holyWeekDay = isBetweenInclusive(ymd, HOLY_WEEK_START, HOLY_WEEK_END);
+
+            return (
+              <button
+                key={`day-${ymd}`}
+                type="button"
+                onClick={() => setSelectedDate(ymd)}
+                className={[
+                  'h-20 rounded-xl border p-2 text-left transition',
+                  isSelected
+                    ? 'border-blue-500 ring-2 ring-blue-200'
+                    : holyWeekDay
+                    ? 'border-rose-300 bg-rose-50 hover:bg-rose-100'
+                    : 'border-gray-200 bg-white hover:bg-gray-50',
+                ].join(' ')}
+              >
+                <div className="flex items-start justify-between">
+                  <span className="text-sm font-semibold">{day}</span>
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {uniqueTypes.slice(0, 4).map((t) => (
+                    <span
+                      key={`${ymd}-${t}`}
+                      className={`inline-block h-2.5 w-2.5 rounded-full ${TYPE_STYLES[t].dot}`}
+                      title={TYPE_STYLES[t].label}
+                    />
+                  ))}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Detalle del día seleccionado */}
+      <div className="rounded-2xl border bg-white/90 p-4 shadow-sm">
+        {!selectedDate ? (
+          <p className="text-sm text-gray-600">
+            Tocá un día del calendario para ver sus celebraciones y horarios.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            <h2 className="text-base font-semibold capitalize">{formatLongDate(selectedDate)}</h2>
+
+            {selectedEvents.length === 0 ? (
+              <p className="text-sm text-gray-600">No hay actividades registradas para este día.</p>
+            ) : (
+              <div className="space-y-2">
+                {selectedEvents.map((ev, i) => (
+                  <div key={`${ev.date}-${ev.title}-${i}`} className="rounded-xl border p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-medium">{ev.title}</p>
+                      <span
+                        className={`inline-flex items-center gap-2 rounded-full border px-2 py-0.5 text-xs ${TYPE_STYLES[ev.type].badge}`}
+                      >
+                        <span className={`h-2 w-2 rounded-full ${TYPE_STYLES[ev.type].dot}`} />
+                        {TYPE_STYLES[ev.type].label}
+                      </span>
+                    </div>
+                    {ev.time ? <p className="mt-1 text-sm text-gray-700">Horario: {ev.time}</p> : null}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
