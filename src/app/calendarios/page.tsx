@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type EventType = 'misa' | 'confesion' | 'adoracion' | 'actividad' | 'liturgia';
 
@@ -180,6 +180,7 @@ export default function CalendariosPage() {
   const now = new Date();
   const [cursor, setCursor] = useState<Date>(new Date(now.getFullYear(), now.getMonth(), 1));
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [liturgicalApiEvents, setLiturgicalApiEvents] = useState<CalendarEvent[]>([]);
 
   const y = cursor.getFullYear();
   const m = cursor.getMonth();
@@ -203,12 +204,33 @@ export default function CalendariosPage() {
   );
   const cells: (number | null)[] = [...emptyCells, ...dayCells];
 
+
+
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/calendario-liturgico?year=${y}&country=AR&diocese=mendoza`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!active) return;
+        const mapped: CalendarEvent[] = (data?.items || [])
+          .filter((it: any) => sameMonth(it.date, y, m))
+          .map((it: any) => ({
+            date: it.date,
+            title: it.celebration || it.saint || 'Celebración litúrgica',
+            type: 'liturgia' as EventType,
+          }));
+        setLiturgicalApiEvents(mapped);
+      })
+      .catch(() => setLiturgicalApiEvents([]));
+    return () => { active = false; };
+  }, [y, m, liturgicalApiEvents]);
+
   const events = useMemo(() => {
     const recurring = buildRecurringParishEvents(y, m);
     const holyWeek = buildHolyWeekEventsForMonth(y, m);
     const manual = getManualActivitiesForMonth(y, m);
-    return [...recurring, ...holyWeek, ...manual];
-  }, [y, m]);
+    return [...recurring, ...holyWeek, ...manual, ...liturgicalApiEvents];
+  }, [y, m, liturgicalApiEvents]);
 
   const eventsByDate = useMemo(() => {
     const map: Record<string, CalendarEvent[]> = {};

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-const items=[['/','Inicio'],['/nosotros','Nosotros'],['/cancionero','Cancionero'],['/santo-de-hoy','Santo de Hoy'],['/calendarios','Calendario'],['/oraciones-santos','Oraciones y Santos'],['/horarios','Horarios de Misa']]
+const items=[['/','Inicio'],['/nosotros','Nosotros'],['/cancionero','Cancionero'],['/santo-de-hoy','Santo de Hoy'],['/calendarios','Calendario'],['/oraciones-santos','Oraciones y Santos'],['/horarios','Informes']]
 export default function Navbar(){
   return <nav className='sticky top-0 z-50 bg-white/95 border-b border-amber-200 backdrop-blur'>
     <div className='max-w-6xl mx-auto px-4 py-3 flex items-center gap-4 flex-wrap'>
