@@ -10,12 +10,17 @@ export function PrayerRequestForm() {
     e.preventDefault();
     setLoading(true); setMessage(null); setError(null);
     const form = new FormData(e.currentTarget);
-    const payload = Object.fromEntries(form.entries());
-    payload.isAnonymous = form.get('isAnonymous') === 'on';
-    payload.allowContact = form.get('allowContact') === 'on';
+    const payload = Object.fromEntries(form.entries()) as Record<string, FormDataEntryValue>;
+    const isAnonymous = form.get('isAnonymous') === 'on' || form.get('isAnonymous') === 'true';
+    const allowContact = form.get('allowContact') === 'on' || form.get('allowContact') === 'true';
+    const body = {
+      ...payload,
+      isAnonymous,
+      allowContact,
+    };
 
     const res = await fetch('/api/prayer-requests', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
     });
     const data = await res.json();
     if (!res.ok) setError(data.error || 'No se pudo enviar');
